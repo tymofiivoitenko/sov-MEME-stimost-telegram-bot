@@ -1,0 +1,15 @@
+bot:
+  name: SovmemstimostBot
+  token: 1838691754:AAGrRAV6MMdXLtFwW7WpwFMll2xbQDax2_M
+mem-test:
+  numberOfMems: 13
+spring:
+  datasource:
+    url: jdbc:postgresql://ec2-108-128-104-50.eu-west-1.compute.amazonaws.com:5432/dchv7tidpqosjr?user=fjqtelwhxrjfxk&password=c37b267b66b87351efc62d08ae849031531b1c064884a6cccaf96bed1dfc7fa9
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: never
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
