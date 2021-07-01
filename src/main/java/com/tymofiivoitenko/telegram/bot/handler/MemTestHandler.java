@@ -35,7 +35,7 @@ import static com.tymofiivoitenko.telegram.util.TelegramUtil.*;
 @Component
 public class MemTestHandler implements Handler {
     //Храним поддерживаемые CallBackQuery в виде констант
-    public static final String MEME_TEST_START = "/mem_classify_start";
+    public static final String MEME_TEST_START = "/mem_test_start";
     public static final String MEME_IS_LIKED = "/meme_is_liked";
     public static final String MEME_IS_DISLIKED = "/meme_is_disliked";
     public static final String MEME_SUPER_LIKE_START = "/meme_super_like_start";
@@ -65,7 +65,7 @@ public class MemTestHandler implements Handler {
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
 
-        System.out.println("user " + user.getId() + " FULL message: " + message);
+        System.out.println("MemTestHandler: user " + user.getId() + " FULL message: <" + message + ">");
 
         if (message.startsWith(MEME_IS_LIKED) || message.startsWith(MEME_IS_DISLIKED)) {
 
@@ -114,7 +114,7 @@ public class MemTestHandler implements Handler {
         if (passedMemeReactionOptional.isPresent()) {
             user.setUserState(UserState.START);
             userRepository.save(user);
-            String finishMessage = " Вы уже проходили тест: t.me/sovmemstimost\\_bot?start=" + testId + "\n Начните новый";
+            String finishMessage = " Вы уже проходили тест: t.me/sovmemstimost\\_bot?start=" + testId + "\nНачните новый";
             List<InlineKeyboardButton> inlineKeyboardButtonsRow = List.of(
                     createInlineKeyboardButton("Начать тест на совМЕМстимость", MemTestHandler.MEME_TEST_START));
             user.setUserState(UserState.MEM_TEST);
@@ -261,9 +261,6 @@ public class MemTestHandler implements Handler {
         try {
             List<MemReaction> allMemeReactions = memReactionRepository.getByMemTestId(memeTestId);
 
-            //System.out.println("allMemeReactions for testId:" +  memeTestId);
-            //allMemeReactions.stream().forEach(System.out::println);
-
             Optional<MemReaction> nextMemReaction = allMemeReactions.stream()
                     .filter(x -> x.getMemReactionState() == MemReactionState.NONE && x.getReactedByUser() == user.getId())
                     .findAny();
@@ -279,7 +276,6 @@ public class MemTestHandler implements Handler {
     private InputStream getMemImage(@NotNull String url) {
         InputStream image = null;
 
-        //System.out.println("URL: " + urlPrefix + url);
         try {
             image = new URL(urlPrefix + url).openStream();
         } catch (IOException ioException) {

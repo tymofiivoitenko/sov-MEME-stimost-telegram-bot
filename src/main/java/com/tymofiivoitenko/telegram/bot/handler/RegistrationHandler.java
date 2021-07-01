@@ -36,14 +36,6 @@ public class RegistrationHandler implements Handler {
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
         return accept(user);
-        // Проверяем тип полученного события
-//        if (message.equalsIgnoreCase(NAME_ACCEPT) || message.equalsIgnoreCase(NAME_CHANGE_CANCEL)) {
-
-//        } else if (message.equalsIgnoreCase(NAME_CHANGE)) {
-//            return changeName(user);
-//        }
-//        return checkName(user, message);
-
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> accept(User user) {
