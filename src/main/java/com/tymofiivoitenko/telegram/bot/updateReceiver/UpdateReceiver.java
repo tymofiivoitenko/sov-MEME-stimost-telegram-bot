@@ -1,7 +1,7 @@
 package com.tymofiivoitenko.telegram.bot.updateReceiver;
 
 import com.tymofiivoitenko.telegram.bot.handler.Handler;
-import com.tymofiivoitenko.telegram.bot.userState.UserState;
+import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import com.tymofiivoitenko.telegram.model.User;
 import org.springframework.stereotype.Component;
 import com.tymofiivoitenko.telegram.repository.JpaUserRepository;

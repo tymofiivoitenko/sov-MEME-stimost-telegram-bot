@@ -1,4 +1,4 @@
-package com.tymofiivoitenko.telegram.bot.userState;
+package com.tymofiivoitenko.telegram.bot.state.userState;
 
 public enum UserState {
     NONE,

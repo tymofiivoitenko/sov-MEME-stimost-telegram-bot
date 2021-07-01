@@ -1,13 +1,12 @@
 package com.tymofiivoitenko.telegram.bot.handler;
 
 
-import com.tymofiivoitenko.telegram.bot.userState.UserState;
+import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import com.tymofiivoitenko.telegram.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 

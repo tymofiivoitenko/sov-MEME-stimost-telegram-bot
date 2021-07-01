@@ -1,7 +1,7 @@
 package com.tymofiivoitenko.telegram.bot.handler;
 
-import com.tymofiivoitenko.telegram.bot.MemReactionState;
-import com.tymofiivoitenko.telegram.bot.userState.UserState;
+import com.tymofiivoitenko.telegram.bot.state.memReactionState.MemReactionState;
+import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import com.tymofiivoitenko.telegram.model.MemImage;
 import com.tymofiivoitenko.telegram.model.MemReaction;
 import com.tymofiivoitenko.telegram.model.MemTest;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 

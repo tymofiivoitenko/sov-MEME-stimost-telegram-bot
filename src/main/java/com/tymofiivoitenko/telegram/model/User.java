@@ -1,6 +1,6 @@
 package com.tymofiivoitenko.telegram.model;
 
-import com.tymofiivoitenko.telegram.bot.userState.UserState;
+import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

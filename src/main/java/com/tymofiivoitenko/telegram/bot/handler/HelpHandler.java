@@ -1,6 +1,6 @@
 package com.tymofiivoitenko.telegram.bot.handler;
 
-import com.tymofiivoitenko.telegram.bot.userState.UserState;
+import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import com.tymofiivoitenko.telegram.model.User;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;

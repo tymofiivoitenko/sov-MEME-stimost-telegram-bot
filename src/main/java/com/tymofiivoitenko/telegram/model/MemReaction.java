@@ -1,12 +1,10 @@
 package com.tymofiivoitenko.telegram.model;
 
-import com.tymofiivoitenko.telegram.bot.MemReactionState;
-import com.tymofiivoitenko.telegram.bot.userState.UserState;
+import com.tymofiivoitenko.telegram.bot.state.memReactionState.MemReactionState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.checkerframework.checker.interning.qual.InternedDistinct;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.NotBlank;
 
