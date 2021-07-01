@@ -16,6 +16,8 @@ import java.util.List;
 
 @Component
 public class UpdateReceiver {
+    public static final String MEME_FORCE_START_OVER = "/start";
+
     // Храним доступные хендлеры в списке (подсмотрел у Miroha)
     private final List<Handler> handlers;
     // Имеем доступ в базу пользователей
@@ -47,6 +49,13 @@ public class UpdateReceiver {
                 // Как раз на случай нового пользователя мы и сделали конструктор с одним параметром в классе User
                 final User user = userRepository.getByChatId(chatId)
                         .orElseGet(() -> userRepository.save(new User(chatId, firstName, lastName, userName)));
+
+                // Check if user wants bot to start from scratch by typing "/start"
+                if (message.getText().equals(MEME_FORCE_START_OVER)) {
+                    user.setUserState(UserState.START);
+                    userRepository.save(user);
+                }
+
                 // Ищем нужный обработчик и возвращаем результат его работы
                 return getHandlerByState(user.getUserState()).handle(user, message.getText());
 
