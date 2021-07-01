@@ -20,4 +20,8 @@ public class MemImage extends AbstractBaseEntity {
     @Column(name = "url", nullable = false)
     @NotNull
     private String url;
+
+    @Column(name = "active", nullable = false)
+    @NotNull
+    private boolean active;
 }

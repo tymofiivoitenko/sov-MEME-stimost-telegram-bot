@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 @Transactional(readOnly = true)
 public interface JpaMemImageRepository extends JpaRepository<MemImage, Integer> {
-    @Query(nativeQuery = true, value = "SELECT id FROM mem_image ORDER BY random() LIMIT 13")
+    @Query(nativeQuery = true, value = "SELECT id FROM mem_image where active = true ORDER BY random() LIMIT 13")
     List<Integer> getRandomMems();
 }

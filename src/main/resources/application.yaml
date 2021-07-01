@@ -5,7 +5,7 @@ mem-test:
   numberOfMems: 13
 spring:
   datasource:
-    url: jdbc:postgresql://ec2-108-128-104-50.eu-west-1.compute.amazonaws.com:5432/dchv7tidpqosjr?user=fjqtelwhxrjfxk&password=c37b267b66b87351efc62d08ae849031531b1c064884a6cccaf96bed1dfc7fa9
+    url: jdbc:postgresql://ec2-54-73-58-75.eu-west-1.compute.amazonaws.com:5432/d1ictmqto6kuds?user=mhtifpwabomgud&password=d95a2365ad375020020cb35543d3da151fd27f97fd990816014f29d2ac8876ed
     driver-class-name: org.postgresql.Driver
     initialization-mode: never
   jpa:
