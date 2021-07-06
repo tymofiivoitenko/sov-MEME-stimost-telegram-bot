@@ -25,6 +25,7 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -64,12 +65,16 @@ public class MemTestHandler implements Handler {
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
 
-        System.out.println("MemTestHandler: user " + user.getId() + " FULL message: <" + message + ">");
+        log.info("MemTestHandler: user " + user.getId() + " FULL message: <" + message + ">");
 
         if (message.startsWith(MEME_IS_LIKED) || message.startsWith(MEME_IS_DISLIKED)) {
 
             // Save meme reaction
-            saveMemeReaction(message);
+            boolean memReactedSuccessfully = saveMemeReaction(message);
+
+            if (!memReactedSuccessfully)  {
+                return memeWasAlreadyReacted(user);
+            }
 
             // Get testId
             int memeTestId = Integer.valueOf(message.substring(message.indexOf("testId: ") + 8, message.indexOf("reactionId:")).trim());
@@ -77,7 +82,7 @@ public class MemTestHandler implements Handler {
             // Get next meme Reaction
             int memeReactionId = getNextReactionInTest(memeTestId, user);
 
-            if (memeReactionId == 0) {
+            if (memeReactionId == -1) {
                 // no more memes to reactions are left
                 return finishTest(user, memeTestId);
             }
@@ -85,14 +90,22 @@ public class MemTestHandler implements Handler {
             // Send next meme to react
             return nextMemeReaction(user, memeTestId, memeReactionId);
         } else if (message.startsWith(MEME_TEST_COMPETION_START)) {
-            System.out.println("WE compete");
+            user.setUserState(UserState.MEM_TEST_COMETETION);
+            userRepository.save(user);
+            log.info("WE compete");
             return competeMemTest(user, message);
         } else if (message.startsWith(MEME_TEST_START)) {
-            System.out.println("WE start new test");
+            log.info("WE start new test");
             return startNewMemTest(user);
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private List<PartialBotApiMethod<? extends Serializable>> memeWasAlreadyReacted(User user) {
+        String message = "";
+        return List.of(createMessageTemplate(user)
+                .setText(String.format(message)));
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> competeMemTest(User user, String message) {
@@ -101,7 +114,7 @@ public class MemTestHandler implements Handler {
         MemTest memtest = memTestRepository.findById(testId).get();
         int createdByUserId = memtest.getCreateByUser();
 
-        System.out.println("User " + user.getId() + " Compete on test createdByUser id: " + createdByUserId);
+        log.info("User " + user.getId() + " Compete on test createdByUser id: " + createdByUserId);
 
         List<MemReaction> oldMemReactions = memReactionRepository.getByMemTestId(testId);
 
@@ -133,10 +146,10 @@ public class MemTestHandler implements Handler {
                 .filter(x -> x.getReactedByUser() == createdByUserId)
                 .collect(Collectors.toList());
 
-        System.out.println("original meme reactions: ");
-        oldMemReactions.forEach(System.out::println);
+        log.info("original meme reactions: ");
+        oldMemReactions.forEach(x -> log.info(x.toString()));
 
-        int firstMemeReactionId = 0;
+        int firstMemeReactionId = -1;
         for (MemReaction memReaction : oldMemReactions) {
             firstMemeReactionId = memReactionRepository.save(new MemReaction(testId, memReaction.getMemImageId(), user.getId())).getId();
         }
@@ -147,19 +160,19 @@ public class MemTestHandler implements Handler {
     private List<PartialBotApiMethod<? extends Serializable>> finishTest(User user, int memeTestId) {
 
         int numberOfMatchReactions = 0;
-        System.out.println("=finishTest:");
+        log.info("=finishTest:");
 
         if (user.getUserState().equals(UserState.MEM_TEST_COMETETION)) {
-            System.out.println("MEM_TEST_COMETETION");
+            log.info("MEM_TEST_COMETETION");
 
             MemTest memtest = memTestRepository.findById(memeTestId).get();
 
-            System.out.println("memtest:" + memtest);
-            System.out.println("createdBy:" + memtest.getCreateByUser());
+            log.info("memtest:" + memtest);
+            log.info("createdBy:" + memtest.getCreateByUser());
             int createdByUserId = memtest.getCreateByUser();
 
             User createdByUser = userRepository.findById(createdByUserId).get();
-            System.out.println("createdByUser: " + createdByUser);
+            log.info("createdByUser: " + createdByUser);
 
             List<MemReaction> allMemReactionsForTestId = memReactionRepository.getByMemTestId(memeTestId);
             List<MemReaction> reactionsByOriginalUser = allMemReactionsForTestId.stream()
@@ -176,11 +189,11 @@ public class MemTestHandler implements Handler {
                         .get();
 
                 if (originalMemReaction.getMemReactionState().equals(reactionByCurrentUser.getMemReactionState())) {
-                    System.out.println("MATCH");
+                    log.info("MATCH, mem id:" + originalMemReaction.getMemImageId());
                     numberOfMatchReactions++;
                     continue;
                 }
-                System.out.println("Doesn't match");
+                log.info("no match, mem id: " + originalMemReaction.getMemImageId() );
             }
 
             user.setUserState(UserState.START);
@@ -189,8 +202,14 @@ public class MemTestHandler implements Handler {
                 matchPercentage = BigDecimal.valueOf(numberOfMatchReactions * 100 / numberOfMemesInTest).setScale(0, RoundingMode.UP);
             }
 
-            String finishMessage = String.format("Поздравляю! твой результат совмемcтимости c *%s* - *%s*" + Character.toString(0xFF05), createdByUser.getFirstName(), matchPercentage);
-            System.out.println("finishMessage: " + finishMessage);
+            // Create original user name = first name + last name (if not empty)
+            String originalUserName = createdByUser.getFirstName();
+            if (!Objects.isNull(createdByUser.getLastName())) {
+                originalUserName = originalUserName + " " + createdByUser.getLastName();
+            }
+
+            String finishMessage = String.format("Поздравляю! твой результат совмемcтимости c *%s* - *%s*" + Character.toString(0xFF05), originalUserName, matchPercentage);
+            log.info("finishMessage: " + finishMessage);
             return List.of(createMessageTemplate(user)
                     .setText(String.format(finishMessage)));
         }
@@ -202,19 +221,27 @@ public class MemTestHandler implements Handler {
                 .setText(String.format(finishMessage)));
     }
 
-    private void saveMemeReaction(String message) {
+    private boolean saveMemeReaction(String message) {
         MemReactionState memReactionState = message.startsWith(MEME_IS_LIKED) ? MemReactionState.LIKE : MemReactionState.DISLIKE;
         int reactionID = Integer.valueOf(message.substring(message.indexOf("reactionId: ") + 12).trim());
 
-        System.out.println("Реагируем на: " + reactionID);
+        log.info("Реагируем на: " + reactionID);
         MemReaction memeReaction = memReactionRepository.findById(reactionID).get();
+
+        // Check if this meme was already reacted
+        if (!memeReaction.getMemReactionState().equals(MemReactionState.NONE)) {
+            log.info("This message has been already reacted");
+            return false;
+        }
 
         memeReaction.setMemReactionState(memReactionState);
         memReactionRepository.save(memeReaction);
+
+        return true;
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> startNewMemTest(User user) {
-        System.out.println("начинаем test");
+        log.info("начинаем test");
 
         // Create new test
         MemTest memTest = new MemTest();
@@ -224,7 +251,7 @@ public class MemTestHandler implements Handler {
         // Choose memes to show to user and create reactions for them with status none
         List<Integer> memIds = memImageRepository.getRandomMems();
 
-        int firstMemeReactionId = 0;
+        int firstMemeReactionId = -1;
 
         // Save new reactions with status None
         for (int i = 0; i < numberOfMemesInTest; i++) {
@@ -240,7 +267,7 @@ public class MemTestHandler implements Handler {
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> nextMemeReaction(User user, int memeTestId, int memeReactionId) {
-        System.out.println("начинаем следующий реакцию пишу в кнопку: memeTestId=" + memeTestId + " memeReactionId = " + memeReactionId);
+        log.info("начинаем следующий реакцию пишу в кнопку: memeTestId=" + memeTestId + " memeReactionId = " + memeReactionId);
 
         // Create Markup of Like and Dislike buttons
         InlineKeyboardMarkup inlineKeyboardMarkup = createLikeDislikeMarkup(memeTestId, memeReactionId);
@@ -256,7 +283,7 @@ public class MemTestHandler implements Handler {
     }
 
     private int getNextReactionInTest(int memeTestId, User user) {
-        int memeReactionId = 0;
+        int memeReactionId = -1;
         try {
             List<MemReaction> allMemeReactions = memReactionRepository.getByMemTestId(memeTestId);
 
@@ -264,7 +291,7 @@ public class MemTestHandler implements Handler {
                     .filter(x -> x.getMemReactionState() == MemReactionState.NONE && x.getReactedByUser() == user.getId())
                     .findAny();
 
-            memeReactionId = nextMemReaction.isPresent() ? nextMemReaction.get().getId() : 0;
+            memeReactionId = nextMemReaction.isPresent() ? nextMemReaction.get().getId() : -1;
         } catch (Exception e) {
             e.printStackTrace();
         }

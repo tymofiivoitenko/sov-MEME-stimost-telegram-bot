@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -51,14 +52,18 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void executeWithExceptionCheck(SendMessage sendMessage) {
-        try {
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-            log.error("oops");
+        if (!sendMessage.getText().isEmpty()) {
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+        } else {
+            log.warn("Empty message. It won't be sent");
         }
     }
+
 
     public void executeWithExceptionCheck(SendPhoto sendPhoto) {
         try {
@@ -66,7 +71,6 @@ public class Bot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
             log.error(e.getMessage());
-            log.error("oops");
         }
     }
 }

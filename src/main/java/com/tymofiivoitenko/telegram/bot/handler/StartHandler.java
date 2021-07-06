@@ -3,6 +3,7 @@ package com.tymofiivoitenko.telegram.bot.handler;
 
 import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import com.tymofiivoitenko.telegram.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
@@ -17,6 +18,7 @@ import static com.tymofiivoitenko.telegram.bot.handler.MemTestHandler.MEME_TEST_
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createInlineKeyboardButton;
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTemplate;
 
+@Slf4j
 @Component
 public class StartHandler implements Handler {
     @Value("${bot.name}")
@@ -52,12 +54,12 @@ public class StartHandler implements Handler {
 
         if (message.startsWith(MEME_TEST_COMPETION_START)) {
             // Меняем пользователю статус на - "ожидание ввода имени"
-            System.out.println("он пришел сюда посоревноваться");
+            log.info("он пришел сюда посоревноваться");
             user.setUserState(UserState.MEM_TEST_COMETETION);
             inlineKeyboardButtonsRow = List.of(
                     createInlineKeyboardButton("Начать тест на совМЕМстимость",  message));
         } else {
-            System.out.println("Это первый раз");
+            log.info("Он пришел создавать тест");
             inlineKeyboardButtonsRow = List.of(
                     createInlineKeyboardButton("Начать тест на совМЕМстимость", MemTestHandler.MEME_TEST_START));
             user.setUserState(UserState.MEM_TEST);

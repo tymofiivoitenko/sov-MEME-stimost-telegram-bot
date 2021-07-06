@@ -3,6 +3,7 @@ package com.tymofiivoitenko.telegram.bot.updateReceiver;
 import com.tymofiivoitenko.telegram.bot.handler.Handler;
 import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import com.tymofiivoitenko.telegram.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Component
 public class UpdateReceiver {
     public static final String MEME_FORCE_START_OVER = "/start";
@@ -30,7 +32,6 @@ public class UpdateReceiver {
 
     // Обрабатываем полученный Update
     public List<PartialBotApiMethod<? extends Serializable>> handle(Update update) {
-        System.out.println("New update message: " + update.getMessage());
 
         // try-catch, чтобы при несуществующей команде просто возвращать пустой список
         try {
@@ -40,6 +41,7 @@ public class UpdateReceiver {
                 // Получаем Message из Update
                 final Message message = update.getMessage();
                 // Получаем айди чата с пользователем
+                log.info("New update message: <" + message + ">");
 
                 final int chatId = message.getFrom().getId();
                 final String firstName = message.getFrom().getFirstName();
@@ -61,6 +63,7 @@ public class UpdateReceiver {
 
             } else if (update.hasCallbackQuery()) {
                 final CallbackQuery callbackQuery = update.getCallbackQuery();
+                log.info("New update callbackQuery: <" + callbackQuery.getData() + ">");
                 final String firstName = callbackQuery.getFrom().getFirstName();
                 final String lastName = callbackQuery.getFrom().getLastName();
                 final String userName= callbackQuery.getFrom().getUserName();

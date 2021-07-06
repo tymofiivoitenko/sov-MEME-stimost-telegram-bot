@@ -4,6 +4,7 @@ import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
 import com.tymofiivoitenko.telegram.model.MemReaction;
 import com.tymofiivoitenko.telegram.model.User;
 import com.tymofiivoitenko.telegram.repository.JpaMemReactionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createInlineKeyboardButton;
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTemplate;
 
+@Slf4j
 @Component
 public class RegistrationHandler implements Handler {
     //Храним поддерживаемые CallBackQuery в виде констант
@@ -48,7 +50,7 @@ public class RegistrationHandler implements Handler {
                 .sorted((f1, f2) -> Long.compare(f2.getId(), f1.getId()))
                 .findFirst();
 
-        System.out.println("LAST meme reaction: " + lastMemReaction.get());
+        log.info("LAST meme reaction: " + lastMemReaction.get());
 
 
         return List.of(createMessageTemplate(user)
