@@ -41,13 +41,13 @@ public class MemTestHandler implements Handler {
     public static final String MEME_SUPER_LIKE_START = "/meme_super_like_start";
     public static final String MEME_TEST_COMPETION_START = "/start ";
 
-    public static final String urlPrefix = "file:///Users/tymofiivoitenko/SovmemstimostBot/src/main/resources/memes/";
+    @Value("${meme-image.meme-folder}")
+    public String urlPrefix;
 
-
-    @Value("${mem-test.numberOfMems}")
+    @Value("${meme-test.number-of-memes}")
     public int numberOfMemesInTest;
 
-    //Храним варианты ответа
+    //Save reactions
     private static final List<String> OPTIONS = List.of(EmojiParser.parseToUnicode(":thumbsup:"), EmojiParser.parseToUnicode(":thumbsdown:"));
 
     private final JpaUserRepository userRepository;
@@ -250,6 +250,7 @@ public class MemTestHandler implements Handler {
 
         // Choose memes to show to user and create reactions for them with status none
         List<Integer> memIds = memImageRepository.getRandomMems();
+        List<MemReaction> emptyMemeReactions = new ArrayList<>();
 
         int firstMemeReactionId = -1;
 
@@ -260,9 +261,11 @@ public class MemTestHandler implements Handler {
             memReaction.setMemReactionState(MemReactionState.NONE);
             memReaction.setMemImageId(memIds.get(i));
             memReaction.setReactedByUser(user.getId());
-            firstMemeReactionId = memReactionRepository.save(memReaction).getId();
+            emptyMemeReactions.add(memReaction);
         }
 
+        // Get id of first saved meme reaction
+        firstMemeReactionId = memReactionRepository.saveAll(emptyMemeReactions).get(0).getId();
         return nextMemeReaction(user, testId, firstMemeReactionId);
     }
 
