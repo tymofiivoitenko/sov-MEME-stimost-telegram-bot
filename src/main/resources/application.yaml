@@ -1,8 +1,10 @@
 bot:
   name: SovmemstimostBot
   token: 1838691754:AAGrRAV6MMdXLtFwW7WpwFMll2xbQDax2_M
-mem-test:
-  numberOfMems: 13
+meme-test:
+  number-of-memes: 13
+meme-image:
+  meme-folder: file:///Users/tymofiivoitenko/SovmemstimostBot/src/main/resources/memes/
 spring:
   datasource:
     url: jdbc:postgresql://ec2-54-73-58-75.eu-west-1.compute.amazonaws.com:5432/d1ictmqto6kuds?user=mhtifpwabomgud&password=d95a2365ad375020020cb35543d3da151fd27f97fd990816014f29d2ac8876ed
