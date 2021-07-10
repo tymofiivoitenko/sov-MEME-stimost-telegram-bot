@@ -11,12 +11,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "mem_image")
+@Table(name = "meme_image")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemImage extends AbstractBaseEntity {
+public class MemeImage extends AbstractBaseEntity {
     @Column(name = "url", nullable = false)
     @NotNull
     private String url;

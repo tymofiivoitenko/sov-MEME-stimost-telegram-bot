@@ -11,20 +11,21 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import static com.tymofiivoitenko.telegram.bot.handler.RegistrationHandler.NAME_CHANGE;
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createInlineKeyboardButton;
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTemplate;
 
 @Component
 public class HelpHandler implements Handler {
+    public static final String HELP = "/start";
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
-        // Создаем кнопку для смены имени
+        // Button for changing name
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
+        // To-Do finish helphandler
         List<InlineKeyboardButton> inlineKeyboardButtonsRowOne = List.of(
-                createInlineKeyboardButton("Change name", NAME_CHANGE));
+                createInlineKeyboardButton("Get help", HELP));
 
         inlineKeyboardMarkup.setKeyboard(List.of(inlineKeyboardButtonsRowOne));
 
@@ -34,7 +35,7 @@ public class HelpHandler implements Handler {
     }
 
     @Override
-    public List<UserState> operatedBotState() {
+    public List<UserState> operatedUserState() {
         return List.of(UserState.NONE);
     }
 

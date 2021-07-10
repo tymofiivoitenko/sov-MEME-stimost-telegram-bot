@@ -1,6 +1,6 @@
 package com.tymofiivoitenko.telegram.model;
 
-import com.tymofiivoitenko.telegram.bot.state.memReactionState.MemReactionState;
+import com.tymofiivoitenko.telegram.bot.state.memeReactionState.MemeReactionState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,24 +13,24 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "mem_reaction")
+@Table(name = "meme_reaction")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemReaction extends AbstractBaseEntity {
+public class MemeReaction extends AbstractBaseEntity {
 
-    @Column(name = "mem_test_id", nullable = false)
+    @Column(name = "meme_test_id", nullable = false)
     @NotNull
-    private int memTestId;
+    private int memeTestId;
 
-    @Column(name = "mem_image_id", nullable = false)
+    @Column(name = "meme_image_id", nullable = false)
     @NotBlank
-    private int memImageId;
+    private int memeImageId;
 
     @Column(name = "reaction", nullable = false)
     @NotBlank
-    private MemReactionState memReactionState;
+    private MemeReactionState memeReactionState;
 
     @Column(name = "reacted_by_user", nullable = false)
     @NotBlank
@@ -40,21 +40,21 @@ public class MemReaction extends AbstractBaseEntity {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    public MemReaction(int testId, int memImageId, int userId) {
-        this.memTestId = testId;
-        this.memReactionState = MemReactionState.NONE;
-        this.memImageId = memImageId;
+    public MemeReaction(int testId, int memeImageId, int userId) {
+        this.memeTestId = testId;
+        this.memeReactionState = MemeReactionState.NONE;
+        this.memeImageId = memeImageId;
         this.reactedByUser = userId;
     }
 
     @Override
     public String toString() {
-        return "MemReaction{" +
-                "id=" + id +
-                ", memTestId=" + memTestId +
-                ", memImageId=" + memImageId +
-                ", memReactionState=" + memReactionState +
+        return "MemeReaction{" +
+                "memeTestId=" + memeTestId +
+                ", memeImageId=" + memeImageId +
+                ", memeReactionState=" + memeReactionState +
                 ", reactedByUser=" + reactedByUser +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

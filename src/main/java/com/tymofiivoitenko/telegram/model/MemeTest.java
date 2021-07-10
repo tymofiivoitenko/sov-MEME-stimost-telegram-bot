@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "mem_test")
+@Table(name = "meme_test")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemTest extends AbstractBaseEntity {
+public class MemeTest extends AbstractBaseEntity {
     @Column(name = "created_by_user", nullable = false)
     @NotNull
     private int createByUser;
@@ -34,7 +34,7 @@ public class MemTest extends AbstractBaseEntity {
 
     @Override
     public String toString() {
-        return "MemTest{" +
+        return "MemeTest{" +
                 "createByUser=" + createByUser +
                 ", createdAt=" + createdAt +
                 '}';

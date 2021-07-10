@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.io.Serializable;
 import java.util.*;
 
-import static com.tymofiivoitenko.telegram.bot.handler.MemTestHandler.MEME_TEST_COMPETION_START;
+import static com.tymofiivoitenko.telegram.bot.handler.MemeTestHandler.MEME_TEST_COMPETITION_START;
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createInlineKeyboardButton;
 import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTemplate;
 
@@ -33,36 +33,28 @@ public class StartHandler implements Handler {
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
 
-        // Приветствуем пользователя
-//        SendMessage welcomeMessage = createMessageTemplate(user)
-//                .setText(String.format(
-//                        "Привет! Пришел проверится у мемного психолога? Это лучше чем гороскопы. Начнем?"));
-//
+        // Say hi to the user
         String welcomeMessage = String.format(
                 "С помощью кнопок \uD83D\uDC4D\uD83C\uDFFB и \uD83D\uDC4E\uD83C\uDFFB оцени 13 случайных мемов и узнай, насколько твои вкусы на мемы совпадают со вкусами твоих знакомых:\n" +
                         "\n" +
                         "(нажимай кнопки только по одному разу, если бот зависает — дожидайся ответа)");
-//        // Просим назваться
-//        SendMessage registrationMessage = createMessageTemplate(user)
-//                .setText("Для начала, скажи как тебя зовут:");
 
-        // Создаем кнопку для начала игры
+        // Create initial button
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         List<InlineKeyboardButton> inlineKeyboardButtonsRow;
 
 
-        if (message.startsWith(MEME_TEST_COMPETION_START)) {
-            // Меняем пользователю статус на - "ожидание ввода имени"
-            log.info("он пришел сюда посоревноваться");
-            user.setUserState(UserState.MEM_TEST_COMETETION);
+        if (message.startsWith(MEME_TEST_COMPETITION_START)) {
+            log.info("He is here for competition");
+            user.setUserState(UserState.MEME_TEST_COMPETITION);
             inlineKeyboardButtonsRow = List.of(
                     createInlineKeyboardButton("Начать тест на совМЕМстимость",  message));
         } else {
-            log.info("Он пришел создавать тест");
+            log.info("He is here to start new test");
             inlineKeyboardButtonsRow = List.of(
-                    createInlineKeyboardButton("Начать тест на совМЕМстимость", MemTestHandler.MEME_TEST_START));
-            user.setUserState(UserState.MEM_TEST);
+                    createInlineKeyboardButton("Начать тест на совМЕМстимость", MemeTestHandler.MEME_TEST_START));
+            user.setUserState(UserState.MEME_TEST);
         }
 
         userRepository.save(user);
@@ -74,7 +66,7 @@ public class StartHandler implements Handler {
     }
 
     @Override
-    public List<UserState> operatedBotState() {
+    public List<UserState> operatedUserState() {
         return List.of(UserState.START);
     }
 

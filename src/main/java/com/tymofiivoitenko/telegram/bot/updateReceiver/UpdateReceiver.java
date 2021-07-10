@@ -20,9 +20,8 @@ import java.util.List;
 public class UpdateReceiver {
     public static final String MEME_FORCE_START_OVER = "/start";
 
-    // Храним доступные хендлеры в списке (подсмотрел у Miroha)
     private final List<Handler> handlers;
-    // Имеем доступ в базу пользователей
+
     private final JpaUserRepository userRepository;
 
     public UpdateReceiver(List<Handler> handlers, JpaUserRepository userRepository) {
@@ -30,25 +29,20 @@ public class UpdateReceiver {
         this.userRepository = userRepository;
     }
 
-    // Обрабатываем полученный Update
     public List<PartialBotApiMethod<? extends Serializable>> handle(Update update) {
 
-        // try-catch, чтобы при несуществующей команде просто возвращать пустой список
         try {
 
-            // Проверяем, если Update - сообщение с текстом
+            // Check if that is update with message
             if (isMessageWithText(update)) {
-                // Получаем Message из Update
                 final Message message = update.getMessage();
-                // Получаем айди чата с пользователем
                 log.info("New update message: <" + message + ">");
 
                 final int chatId = message.getFrom().getId();
                 final String firstName = message.getFrom().getFirstName();
                 final String lastName = message.getFrom().getLastName();
                 final String userName= message.getFrom().getUserName();
-                // Просим у репозитория пользователя. Если такого пользователя нет - создаем нового и возвращаем его.
-                // Как раз на случай нового пользователя мы и сделали конструктор с одним параметром в классе User
+                // Check user repository - if there is no such user, we create a new one and return it.
                 final User user = userRepository.getByChatId(chatId)
                         .orElseGet(() -> userRepository.save(new User(chatId, firstName, lastName, userName)));
 
@@ -58,7 +52,7 @@ public class UpdateReceiver {
                     userRepository.save(user);
                 }
 
-                // Ищем нужный обработчик и возвращаем результат его работы
+                // Find suitable current based on user state
                 return getHandlerByState(user.getUserState()).handle(user, message.getText());
 
             } else if (update.hasCallbackQuery()) {
@@ -83,8 +77,8 @@ public class UpdateReceiver {
 
     private Handler getHandlerByState(UserState userState) {
         return handlers.stream()
-                .filter(h -> h.operatedBotState() != null)
-                .filter(h -> h.operatedBotState().contains(userState))
+                .filter(h -> h.operatedUserState() != null)
+                .filter(h -> h.operatedUserState().contains(userState))
                 .findAny()
                 .orElseThrow(UnsupportedOperationException::new);
     }

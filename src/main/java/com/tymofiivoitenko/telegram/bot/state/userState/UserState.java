@@ -4,6 +4,6 @@ public enum UserState {
     NONE,
     START,
     ENTER_NAME,
-    MEM_TEST,
-    MEM_TEST_COMETETION,
+    MEME_TEST,
+    MEME_TEST_COMPETITION,
 }
