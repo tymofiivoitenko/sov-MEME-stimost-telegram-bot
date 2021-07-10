@@ -50,7 +50,6 @@ public class FinishTestHandler implements Handler {
 
     }
 
-
     @Override
     public List<UserState> operatedUserState() {
         return List.of(UserState.ENTER_NAME);

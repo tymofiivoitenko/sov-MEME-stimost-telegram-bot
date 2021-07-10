@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -158,12 +159,12 @@ public class MemeTestHandler implements Handler {
         return nextMemeReaction(user, testId, firstMemeReactionId);
     }
 
-    private List<PartialBotApiMethod<? extends Serializable>> finishTest(User user, int memeTestId) {
+    private List<PartialBotApiMethod<? extends Serializable>> finishTest(User userPassTest, int memeTestId) {
 
         int numberOfMatchReactions = 0;
         log.info("finishTest");
 
-        if (user.getUserState().equals(UserState.MEME_TEST_COMPETITION)) {
+        if (userPassTest.getUserState().equals(UserState.MEME_TEST_COMPETITION)) {
             log.info("MEME_TEST_COMPETITION");
 
             MemeTest memtest = memTestRepository.findById(memeTestId).get();
@@ -180,7 +181,7 @@ public class MemeTestHandler implements Handler {
                     .filter(x -> (x.getReactedByUser() == createdByUserId))
                     .collect(Collectors.toList());
             List<MemeReaction> reactionsByCurrentUser = allMemeReactionsForTestId.stream()
-                    .filter(x -> (x.getReactedByUser() == user.getId()))
+                    .filter(x -> (x.getReactedByUser() == userPassTest.getId()))
                     .collect(Collectors.toList());
 
             for (MemeReaction originalMemeReaction : reactionsByOriginalUser) {
@@ -197,7 +198,7 @@ public class MemeTestHandler implements Handler {
                 log.info("no match, mem id: " + originalMemeReaction.getMemeImageId() );
             }
 
-            user.setUserState(UserState.START);
+            userPassTest.setUserState(UserState.START);
             BigDecimal matchPercentage = new BigDecimal("0");
             if (numberOfMatchReactions != 0) {
                 matchPercentage = BigDecimal.valueOf(numberOfMatchReactions * 100 / numberOfMemesInTest).setScale(0, RoundingMode.UP);
@@ -209,16 +210,20 @@ public class MemeTestHandler implements Handler {
                 originalUserName = originalUserName + " " + createdByUser.getLastName();
             }
 
-            String finishMessage = String.format("Поздравляю! твой результат совмемcтимости c *%s* - *%s*" + Character.toString(0xFF05), originalUserName, matchPercentage);
-            log.info("finishMessage: " + finishMessage);
-            return List.of(createMessageTemplate(user)
-                    .setText(String.format(finishMessage)));
+            String competingUserFinishMessage = String.format("Поздравляю! твой результат совMEMcтимости c *%s* - *%s*" + Character.toString(0xFF05), originalUserName, matchPercentage);
+            log.info("competingUserfinishMessage: " + competingUserFinishMessage);
+
+            String originalUserFinishMessage = String.format("Поздравляю! Пользователь *%s* прошел твой тест. Ваш результат совMEMcтимости - *%s*" + Character.toString(0xFF05), userPassTest.getFirstName(), matchPercentage);
+            log.info("originalUserFinishMessage: " + originalUserFinishMessage);
+
+            return List.of(createMessageTemplate(userPassTest).setText(String.format(competingUserFinishMessage)),
+                    createMessageTemplate(createdByUser).setText(String.format(originalUserFinishMessage)));
         }
 
-        user.setUserState(UserState.START);
-        userRepository.save(user);
+        userPassTest.setUserState(UserState.START);
+        userRepository.save(userPassTest);
         String finishMessage = "Теперь осталось узнать вкусы твоих знакомых и сравнить с твоими. Для этого отправь им свою личную ссылку на тест: t.me/sovmemstimost\\_bot?start=" + memeTestId + "\n\nКогда они пройдут тест — тебе придут результаты, с кем именно и насколько у тебя совпадают вкусы на мемы.";
-        return List.of(createMessageTemplate(user)
+        return List.of(createMessageTemplate(userPassTest)
                 .setText(String.format(finishMessage)));
     }
 
