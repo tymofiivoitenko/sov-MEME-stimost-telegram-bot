@@ -25,15 +25,15 @@ public class MemeReaction extends AbstractBaseEntity {
     private int memeTestId;
 
     @Column(name = "meme_image_id", nullable = false)
-    @NotBlank
+    @NotNull
     private int memeImageId;
 
     @Column(name = "reaction", nullable = false)
-    @NotBlank
+    @NotNull
     private MemeReactionState memeReactionState;
 
     @Column(name = "reacted_by_user", nullable = false)
-    @NotBlank
+    @NotNull
     private int reactedByUser;
 
     @CreationTimestamp
