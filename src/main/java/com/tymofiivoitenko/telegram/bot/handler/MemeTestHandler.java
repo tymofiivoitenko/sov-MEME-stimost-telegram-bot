@@ -213,7 +213,7 @@ public class MemeTestHandler implements Handler {
             String competingUserFinishMessage = String.format("Поздравляю! твой результат совMEMcтимости c *%s* - *%s*" + Character.toString(0xFF05), originalUserName, matchPercentage);
             log.info("competingUserfinishMessage: " + competingUserFinishMessage);
 
-            String originalUserFinishMessage = String.format("Поздравляю! Пользователь *%s* прошел твой тест. Ваш результат совMEMcтимости - *%s*" + Character.toString(0xFF05), userPassTest.getFirstName(), matchPercentage);
+            String originalUserFinishMessage = String.format("Поздравляю! Пользователь *%s* только что прошел твой тест. Ваш результат совMEMcтимости - *%s*" + Character.toString(0xFF05), userPassTest.getFirstName(), matchPercentage);
             log.info("originalUserFinishMessage: " + originalUserFinishMessage);
 
             return List.of(createMessageTemplate(userPassTest).setText(String.format(competingUserFinishMessage)),
@@ -223,6 +223,7 @@ public class MemeTestHandler implements Handler {
         userPassTest.setUserState(UserState.START);
         userRepository.save(userPassTest);
         String finishMessage = "Теперь осталось узнать вкусы твоих знакомых и сравнить с твоими. Для этого отправь им свою личную ссылку на тест: t.me/sovmemstimost\\_bot?start=" + memeTestId + "\n\nКогда они пройдут тест — тебе придут результаты, с кем именно и насколько у тебя совпадают вкусы на мемы.";
+        log.info("FinishMessage: " + finishMessage);
         return List.of(createMessageTemplate(userPassTest)
                 .setText(String.format(finishMessage)));
     }
