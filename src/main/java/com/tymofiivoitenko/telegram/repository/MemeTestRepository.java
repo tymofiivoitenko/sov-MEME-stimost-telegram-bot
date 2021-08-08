@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional(readOnly = true)
-public interface JpaMemeTestRepository extends JpaRepository<MemeTest, Integer> {
+public interface MemeTestRepository extends JpaRepository<MemeTest, Integer> {
     // Get meme test created by userId
     Optional<MemeTest> getByCreateByUser(int userId);
 }

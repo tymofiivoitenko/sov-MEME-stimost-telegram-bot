@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
-public interface JpaMemeImageRepository extends JpaRepository<MemeImage, Integer> {
+public interface MemeImageRepository extends JpaRepository<MemeImage, Integer> {
     @Query(nativeQuery = true, value = "SELECT id FROM meme_image where active = true ORDER BY random() LIMIT 13")
     List<Integer> getRandomMemes();
 }

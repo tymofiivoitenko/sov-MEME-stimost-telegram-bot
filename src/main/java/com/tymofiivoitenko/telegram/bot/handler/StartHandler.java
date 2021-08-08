@@ -4,9 +4,11 @@ package com.tymofiivoitenko.telegram.bot.handler;
 import com.tymofiivoitenko.telegram.model.user.UserState;
 import com.tymofiivoitenko.telegram.model.user.User;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.NaturalId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
+import com.tymofiivoitenko.telegram.repository.UserRepository;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -21,14 +23,9 @@ import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTempla
 @Slf4j
 @Component
 public class StartHandler implements Handler {
-    @Value("${bot.name}")
-    private String botUsername;
 
-    private final JpaUserRepository userRepository;
-
-    public StartHandler(JpaUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {

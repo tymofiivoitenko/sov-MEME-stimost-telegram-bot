@@ -1,6 +1,6 @@
 package com.tymofiivoitenko.telegram.model.user;
 
 public enum UserRole {
-    CUSTOMER,
-    ADMIN,
+    ROLE_CUSTOMER,
+    ROLE_ADMIN,
 }

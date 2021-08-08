@@ -5,7 +5,7 @@ import com.tymofiivoitenko.telegram.model.user.UserState;
 import com.tymofiivoitenko.telegram.model.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
+import com.tymofiivoitenko.telegram.repository.UserRepository;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -22,9 +22,9 @@ public class UpdateReceiver {
 
     private final List<Handler> handlers;
 
-    private final JpaUserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UpdateReceiver(List<Handler> handlers, JpaUserRepository userRepository) {
+    public UpdateReceiver(List<Handler> handlers, UserRepository userRepository) {
         this.handlers = handlers;
         this.userRepository = userRepository;
     }

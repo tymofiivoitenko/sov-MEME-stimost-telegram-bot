@@ -3,10 +3,11 @@ package com.tymofiivoitenko.telegram.bot.handler;
 import com.tymofiivoitenko.telegram.model.user.UserState;
 import com.tymofiivoitenko.telegram.model.meme.MemeReaction;
 import com.tymofiivoitenko.telegram.model.user.User;
-import com.tymofiivoitenko.telegram.repository.JpaMemeReactionRepository;
+import com.tymofiivoitenko.telegram.repository.MemeReactionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
+import com.tymofiivoitenko.telegram.repository.UserRepository;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 
 import java.io.Serializable;
@@ -19,13 +20,11 @@ import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTempla
 @Component
 public class FinishTestHandler implements Handler {
 
-    private final JpaUserRepository userRepository;
-    private final JpaMemeReactionRepository memeReactionRepository;
+    @Autowired
+    UserRepository userRepository;
 
-    public FinishTestHandler(JpaUserRepository userRepository, JpaMemeReactionRepository memeReactionRepository) {
-        this.userRepository = userRepository;
-        this.memeReactionRepository = memeReactionRepository;
-    }
+    @Autowired
+    MemeReactionRepository memeReactionRepository;
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {

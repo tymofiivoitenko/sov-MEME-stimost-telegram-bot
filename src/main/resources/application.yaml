@@ -15,7 +15,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  security:
-    user:
-      name: tyvoitenko@gmail.com
-      password: djhfaxskfcDl3#1k
+#  security:
+#    user:
+#      name: tyvoitenko@gmail.com
+#      password: djhfaxskfcDl3#1k

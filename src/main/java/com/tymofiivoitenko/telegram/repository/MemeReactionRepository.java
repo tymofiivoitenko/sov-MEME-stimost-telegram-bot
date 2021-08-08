@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
-public interface JpaMemeReactionRepository extends JpaRepository<MemeReaction, Integer> {
+public interface MemeReactionRepository extends JpaRepository<MemeReaction, Integer> {
     // По названию метода Spring сам поймет, что мы хотим получить пользователя по переданному chatId
     List<MemeReaction> getByMemeTestId(int memTestId);
     //MemReaction getById(int memeReactionId);

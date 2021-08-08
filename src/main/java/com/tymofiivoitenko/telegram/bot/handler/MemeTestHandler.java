@@ -6,12 +6,14 @@ import com.tymofiivoitenko.telegram.model.meme.MemeImage;
 import com.tymofiivoitenko.telegram.model.meme.MemeReaction;
 import com.tymofiivoitenko.telegram.model.meme.MemeTest;
 import com.tymofiivoitenko.telegram.model.user.User;
-import com.tymofiivoitenko.telegram.repository.JpaMemeImageRepository;
-import com.tymofiivoitenko.telegram.repository.JpaMemeReactionRepository;
-import com.tymofiivoitenko.telegram.repository.JpaMemeTestRepository;
-import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
+import com.tymofiivoitenko.telegram.repository.MemeImageRepository;
+import com.tymofiivoitenko.telegram.repository.MemeReactionRepository;
+import com.tymofiivoitenko.telegram.repository.MemeTestRepository;
+import com.tymofiivoitenko.telegram.repository.UserRepository;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.NaturalId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -34,6 +36,7 @@ import static com.tymofiivoitenko.telegram.util.TelegramUtil.*;
 @Slf4j
 @Component
 public class MemeTestHandler implements Handler {
+
     // Store supported CallBackQuery as constants
     public static final String MEME_TEST_START = "/mem_test_start";
     public static final String MEME_IS_LIKED = "/meme_is_liked";
@@ -41,26 +44,23 @@ public class MemeTestHandler implements Handler {
     public static final String MEME_SUPER_LIKE_START = "/meme_super_like_start";
     public static final String MEME_TEST_COMPETITION_START = "/start ";
 
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    MemeTestRepository memTestRepository;
+    @Autowired
+    MemeImageRepository memImageRepository;
+    @Autowired
+    MemeReactionRepository memeReactionRepository;
+
     @Value("${meme-image.meme-folder}")
     public String urlPrefix;
 
     @Value("${meme-test.number-of-memes}")
     public int numberOfMemesInTest;
 
-    //Save reactions
+    //Meme reactions (thumbsup, thumbsdown)
     private static final List<String> OPTIONS = List.of(EmojiParser.parseToUnicode(":thumbsup:"), EmojiParser.parseToUnicode(":thumbsdown:"));
-
-    private final JpaUserRepository userRepository;
-    private final JpaMemeTestRepository memTestRepository;
-    private final JpaMemeImageRepository memImageRepository;
-    private final JpaMemeReactionRepository memeReactionRepository;
-
-    public MemeTestHandler(JpaUserRepository userRepository, JpaMemeTestRepository memTestRepository, JpaMemeImageRepository memImageRepository, JpaMemeReactionRepository memeReactionRepository) {
-        this.userRepository = userRepository;
-        this.memTestRepository = memTestRepository;
-        this.memImageRepository = memImageRepository;
-        this.memeReactionRepository = memeReactionRepository;
-    }
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
@@ -72,7 +72,7 @@ public class MemeTestHandler implements Handler {
             // Save meme reaction
             boolean memReactedSuccessfully = saveMemeReaction(message);
 
-            if (!memReactedSuccessfully)  {
+            if (!memReactedSuccessfully) {
                 return memeWasAlreadyReacted(user);
             }
 
@@ -194,7 +194,7 @@ public class MemeTestHandler implements Handler {
                     numberOfMatchReactions++;
                     continue;
                 }
-                log.info("no match, mem id: " + originalMemeReaction.getMemeImageId() );
+                log.info("no match, mem id: " + originalMemeReaction.getMemeImageId());
             }
 
             userPassTest.setState(UserState.START);

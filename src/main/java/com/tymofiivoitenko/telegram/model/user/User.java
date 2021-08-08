@@ -52,7 +52,7 @@ public class User extends AbstractBaseEntity {
         this.lastName = lastName;
         this.userName = userName;
         this.state = UserState.START;
-        this.role = UserRole.CUSTOMER;
+        this.role = UserRole.ROLE_CUSTOMER;
     }
 
     public User(int chatId) {
