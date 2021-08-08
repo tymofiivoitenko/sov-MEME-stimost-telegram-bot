@@ -1,8 +1,8 @@
 package com.tymofiivoitenko.telegram.bot.handler;
 
-import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
-import com.tymofiivoitenko.telegram.model.MemeReaction;
-import com.tymofiivoitenko.telegram.model.User;
+import com.tymofiivoitenko.telegram.model.user.UserState;
+import com.tymofiivoitenko.telegram.model.meme.MemeReaction;
+import com.tymofiivoitenko.telegram.model.user.User;
 import com.tymofiivoitenko.telegram.repository.JpaMemeReactionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class FinishTestHandler implements Handler {
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
         // If user is here, he wants to start from scratch. Change his status to None
-        user.setUserState(UserState.NONE);
+        user.setState(UserState.NONE);
         userRepository.save(user);
 
         List<MemeReaction> allMemeReactions = memeReactionRepository.findAll();

@@ -1,8 +1,8 @@
 package com.tymofiivoitenko.telegram.bot.handler;
 
 
-import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
-import com.tymofiivoitenko.telegram.model.User;
+import com.tymofiivoitenko.telegram.model.user.UserState;
+import com.tymofiivoitenko.telegram.model.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -47,14 +47,14 @@ public class StartHandler implements Handler {
 
         if (message.startsWith(MEME_TEST_COMPETITION_START)) {
             log.info("He is here for competition");
-            user.setUserState(UserState.MEME_TEST_COMPETITION);
+            user.setState(UserState.MEME_TEST_COMPETITION);
             inlineKeyboardButtonsRow = List.of(
                     createInlineKeyboardButton("Начать тест на совМЕМстимость",  message));
         } else {
             log.info("He is here to start new test");
             inlineKeyboardButtonsRow = List.of(
                     createInlineKeyboardButton("Начать тест на совМЕМстимость", MemeTestHandler.MEME_TEST_START));
-            user.setUserState(UserState.MEME_TEST);
+            user.setState(UserState.MEME_TEST);
         }
 
         userRepository.save(user);

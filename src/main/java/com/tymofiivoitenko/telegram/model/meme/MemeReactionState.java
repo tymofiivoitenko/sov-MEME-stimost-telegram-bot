@@ -1,4 +1,4 @@
-package com.tymofiivoitenko.telegram.bot.state.memeReactionState;
+package com.tymofiivoitenko.telegram.model.meme;
 
 public enum MemeReactionState {
     NONE,

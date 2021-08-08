@@ -1,8 +1,8 @@
 package com.tymofiivoitenko.telegram.bot.updateReceiver;
 
 import com.tymofiivoitenko.telegram.bot.handler.Handler;
-import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
-import com.tymofiivoitenko.telegram.model.User;
+import com.tymofiivoitenko.telegram.model.user.UserState;
+import com.tymofiivoitenko.telegram.model.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import com.tymofiivoitenko.telegram.repository.JpaUserRepository;
@@ -48,12 +48,12 @@ public class UpdateReceiver {
 
                 // Check if user wants bot to start from scratch by typing "/start"
                 if (message.getText().equals(MEME_FORCE_START_OVER)) {
-                    user.setUserState(UserState.START);
+                    user.setState(UserState.START);
                     userRepository.save(user);
                 }
 
                 // Find suitable current based on user state
-                return getHandlerByState(user.getUserState()).handle(user, message.getText());
+                return getHandlerByState(user.getState()).handle(user, message.getText());
 
             } else if (update.hasCallbackQuery()) {
                 final CallbackQuery callbackQuery = update.getCallbackQuery();

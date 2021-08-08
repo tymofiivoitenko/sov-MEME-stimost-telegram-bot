@@ -1,12 +1,11 @@
-package com.tymofiivoitenko.telegram.model;
+package com.tymofiivoitenko.telegram.model.meme;
 
-import com.tymofiivoitenko.telegram.bot.state.memeReactionState.MemeReactionState;
+import com.tymofiivoitenko.telegram.model.AbstractBaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

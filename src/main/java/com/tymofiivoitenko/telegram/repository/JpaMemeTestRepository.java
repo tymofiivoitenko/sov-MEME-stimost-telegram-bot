@@ -1,6 +1,6 @@
 package com.tymofiivoitenko.telegram.repository;
 
-import com.tymofiivoitenko.telegram.model.MemeTest;
+import com.tymofiivoitenko.telegram.model.meme.MemeTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

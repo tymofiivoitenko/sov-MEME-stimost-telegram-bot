@@ -1,12 +1,11 @@
-package com.tymofiivoitenko.telegram.model;
+package com.tymofiivoitenko.telegram.model.user;
 
-import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
+import com.tymofiivoitenko.telegram.model.AbstractBaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,7 +23,7 @@ public class User extends AbstractBaseEntity {
     private Integer chatId;
 
     @Column(name = "first_name")
-    @NotBlank
+    @NotNull
     private String firstName;
 
     @Column(name = "last_name")
@@ -34,26 +33,31 @@ public class User extends AbstractBaseEntity {
     private String userName;
 
     @Column(name = "user_state", nullable = false)
-    @NotBlank
-    private UserState userState;
+    @NotNull
+    private UserState state;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    // Конструктор нужен для создания нового пользователя (а может и нет? :))
-    public User(int chatId, String firstName, String lastName,String userName) {
+    @Column(name = "role", nullable = false)
+    private UserRole role;
+
+    @Column(name = "password")
+    private String password;
+
+    public User(int chatId, String firstName, String lastName, String userName) {
         this.chatId = chatId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
-        this.userState = UserState.START;
+        this.state = UserState.START;
+        this.role = UserRole.CUSTOMER;
     }
 
-    // Конструктор нужен для создания нового пользователя (а может и нет? :))
     public User(int chatId) {
         this.chatId = chatId;
         this.firstName = String.valueOf(chatId);
-        this.userState = UserState.START;
+        this.state = UserState.START;
     }
 }

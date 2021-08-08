@@ -1,12 +1,9 @@
 package com.tymofiivoitenko.telegram.util;
 
-import com.tymofiivoitenko.telegram.model.User;
+import com.tymofiivoitenko.telegram.model.user.User;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-
-import java.io.File;
-import java.io.FileInputStream;
 
 public class TelegramUtil {
     public static SendMessage createMessageTemplate(User user) {

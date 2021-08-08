@@ -1,11 +1,11 @@
 package com.tymofiivoitenko.telegram.bot.handler;
 
-import com.tymofiivoitenko.telegram.bot.state.memeReactionState.MemeReactionState;
-import com.tymofiivoitenko.telegram.bot.state.userState.UserState;
-import com.tymofiivoitenko.telegram.model.MemeImage;
-import com.tymofiivoitenko.telegram.model.MemeReaction;
-import com.tymofiivoitenko.telegram.model.MemeTest;
-import com.tymofiivoitenko.telegram.model.User;
+import com.tymofiivoitenko.telegram.model.meme.MemeReactionState;
+import com.tymofiivoitenko.telegram.model.user.UserState;
+import com.tymofiivoitenko.telegram.model.meme.MemeImage;
+import com.tymofiivoitenko.telegram.model.meme.MemeReaction;
+import com.tymofiivoitenko.telegram.model.meme.MemeTest;
+import com.tymofiivoitenko.telegram.model.user.User;
 import com.tymofiivoitenko.telegram.repository.JpaMemeImageRepository;
 import com.tymofiivoitenko.telegram.repository.JpaMemeReactionRepository;
 import com.tymofiivoitenko.telegram.repository.JpaMemeTestRepository;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -91,7 +90,7 @@ public class MemeTestHandler implements Handler {
             // Send next meme to react
             return nextMemeReaction(user, memeTestId, memeReactionId);
         } else if (message.startsWith(MEME_TEST_COMPETITION_START)) {
-            user.setUserState(UserState.MEME_TEST_COMPETITION);
+            user.setState(UserState.MEME_TEST_COMPETITION);
             userRepository.save(user);
             log.info("User starts competition");
 
@@ -126,12 +125,12 @@ public class MemeTestHandler implements Handler {
                 .findAny();
 
         if (passedMemeReactionOptional.isPresent()) {
-            user.setUserState(UserState.START);
+            user.setState(UserState.START);
             userRepository.save(user);
             String finishMessage = " Вы уже проходили тест: t.me/sovmemstimost\\_bot?start=" + testId + "\nНачните новый";
             List<InlineKeyboardButton> inlineKeyboardButtonsRow = List.of(
                     createInlineKeyboardButton("Начать тест на совМЕМстимость", MemeTestHandler.MEME_TEST_START));
-            user.setUserState(UserState.MEME_TEST);
+            user.setState(UserState.MEME_TEST);
             userRepository.save(user);
 
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -164,7 +163,7 @@ public class MemeTestHandler implements Handler {
         int numberOfMatchReactions = 0;
         log.info("finishTest");
 
-        if (userPassTest.getUserState().equals(UserState.MEME_TEST_COMPETITION)) {
+        if (userPassTest.getState().equals(UserState.MEME_TEST_COMPETITION)) {
             log.info("MEME_TEST_COMPETITION");
 
             MemeTest memtest = memTestRepository.findById(memeTestId).get();
@@ -198,7 +197,7 @@ public class MemeTestHandler implements Handler {
                 log.info("no match, mem id: " + originalMemeReaction.getMemeImageId() );
             }
 
-            userPassTest.setUserState(UserState.START);
+            userPassTest.setState(UserState.START);
             BigDecimal matchPercentage = new BigDecimal("0");
             if (numberOfMatchReactions != 0) {
                 matchPercentage = BigDecimal.valueOf(numberOfMatchReactions * 100 / numberOfMemesInTest).setScale(0, RoundingMode.UP);
@@ -220,7 +219,7 @@ public class MemeTestHandler implements Handler {
                     createMessageTemplate(createdByUser).setText(String.format(originalUserFinishMessage)));
         }
 
-        userPassTest.setUserState(UserState.START);
+        userPassTest.setState(UserState.START);
         userRepository.save(userPassTest);
         String finishMessage = "Теперь осталось узнать вкусы твоих знакомых и сравнить с твоими. Для этого отправь им свою личную ссылку на тест: t.me/sovmemstimost\\_bot?start=" + memeTestId + "\n\nКогда они пройдут тест — тебе придут результаты, с кем именно и насколько у тебя совпадают вкусы на мемы.";
         log.info("FinishMessage: " + finishMessage);

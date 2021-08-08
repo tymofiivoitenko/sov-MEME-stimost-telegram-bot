@@ -1,5 +1,6 @@
-package com.tymofiivoitenko.telegram.model;
+package com.tymofiivoitenko.telegram.model.meme;
 
+import com.tymofiivoitenko.telegram.model.AbstractBaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
