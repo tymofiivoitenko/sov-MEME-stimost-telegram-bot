@@ -1,4 +1,4 @@
-package com.tymofiivoitenko;
+package com.tymofiivoitenko.telegram;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

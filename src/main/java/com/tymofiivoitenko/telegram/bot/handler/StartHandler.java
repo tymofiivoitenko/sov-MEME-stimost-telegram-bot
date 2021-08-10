@@ -25,7 +25,7 @@ import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTempla
 public class StartHandler implements Handler {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
@@ -46,7 +46,7 @@ public class StartHandler implements Handler {
             log.info("He is here for competition");
             user.setState(UserState.MEME_TEST_COMPETITION);
             inlineKeyboardButtonsRow = List.of(
-                    createInlineKeyboardButton("Начать тест на совМЕМстимость",  message));
+                    createInlineKeyboardButton("Начать тест на совМЕМстимость", message));
         } else {
             log.info("He is here to start new test");
             inlineKeyboardButtonsRow = List.of(

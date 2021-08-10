@@ -45,13 +45,16 @@ public class MemeTestHandler implements Handler {
     public static final String MEME_TEST_COMPETITION_START = "/start ";
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
     @Autowired
-    MemeTestRepository memTestRepository;
+    private MemeTestRepository memTestRepository;
+
     @Autowired
-    MemeImageRepository memImageRepository;
+    private MemeImageRepository memImageRepository;
+
     @Autowired
-    MemeReactionRepository memeReactionRepository;
+    private MemeReactionRepository memeReactionRepository;
 
     @Value("${meme-image.meme-folder}")
     public String urlPrefix;
@@ -166,11 +169,11 @@ public class MemeTestHandler implements Handler {
         if (userPassTest.getState().equals(UserState.MEME_TEST_COMPETITION)) {
             log.info("MEME_TEST_COMPETITION");
 
-            MemeTest memtest = memTestRepository.findById(memeTestId).get();
+            MemeTest memeTest = memTestRepository.findById(memeTestId).get();
 
-            log.info("memtest:" + memtest);
-            log.info("createdBy:" + memtest.getCreateByUser());
-            int createdByUserId = memtest.getCreateByUser();
+            log.info("memeTest:" + memeTest);
+            log.info("createdBy:" + memeTest.getCreateByUser());
+            int createdByUserId = memeTest.getCreateByUser();
 
             User createdByUser = userRepository.findById(createdByUserId).get();
             log.info("createdByUser: " + createdByUser);
@@ -247,7 +250,7 @@ public class MemeTestHandler implements Handler {
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> startNewMemeTest(User user) {
-        log.info("начинаем test");
+        log.info("start new test");
 
         // Create new test
         MemeTest memeTest = new MemeTest();
@@ -276,7 +279,7 @@ public class MemeTestHandler implements Handler {
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> nextMemeReaction(User user, int memeTestId, int memeReactionId) {
-        log.info("начинаем следующий реакцию пишу в кнопку: memeTestId=" + memeTestId + " memeReactionId = " + memeReactionId);
+        log.info("Start next reaction. Data in tg button: memeTestId=" + memeTestId + " memeReactionId = " + memeReactionId);
 
         // Create Markup of Like and Dislike buttons
         InlineKeyboardMarkup inlineKeyboardMarkup = createLikeDislikeMarkup(memeTestId, memeReactionId);

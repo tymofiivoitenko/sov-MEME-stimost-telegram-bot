@@ -21,10 +21,10 @@ import static com.tymofiivoitenko.telegram.util.TelegramUtil.createMessageTempla
 public class FinishTestHandler implements Handler {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    MemeReactionRepository memeReactionRepository;
+    private MemeReactionRepository memeReactionRepository;
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
