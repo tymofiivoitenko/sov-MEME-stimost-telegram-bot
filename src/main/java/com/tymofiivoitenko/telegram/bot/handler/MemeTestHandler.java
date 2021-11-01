@@ -1,18 +1,17 @@
 package com.tymofiivoitenko.telegram.bot.handler;
 
-import com.tymofiivoitenko.telegram.model.meme.MemeReactionState;
-import com.tymofiivoitenko.telegram.model.user.UserState;
 import com.tymofiivoitenko.telegram.model.meme.MemeImage;
 import com.tymofiivoitenko.telegram.model.meme.MemeReaction;
+import com.tymofiivoitenko.telegram.model.meme.MemeReactionState;
 import com.tymofiivoitenko.telegram.model.meme.MemeTest;
 import com.tymofiivoitenko.telegram.model.user.User;
+import com.tymofiivoitenko.telegram.model.user.UserState;
 import com.tymofiivoitenko.telegram.repository.MemeImageRepository;
 import com.tymofiivoitenko.telegram.repository.MemeReactionRepository;
 import com.tymofiivoitenko.telegram.repository.MemeTestRepository;
 import com.tymofiivoitenko.telegram.repository.UserRepository;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.NaturalId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import javax.validation.constraints.NotNull;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
@@ -68,7 +70,7 @@ public class MemeTestHandler implements Handler {
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(User user, String message) {
 
-        log.info("MemTestHandler: user " + user.getId() + " FULL message: <" + message + ">");
+        log.info("MemeTestHandler: user " + user.getId() + " FULL message: <" + message + ">");
 
         if (message.startsWith(MEME_IS_LIKED) || message.startsWith(MEME_IS_DISLIKED)) {
 
@@ -97,7 +99,7 @@ public class MemeTestHandler implements Handler {
             userRepository.save(user);
             log.info("User starts competition");
 
-            return competeMemTest(user, message);
+            return completeMemTest(user, message);
         } else if (message.startsWith(MEME_TEST_START)) {
             log.info("User starts new test");
             return startNewMemeTest(user);
@@ -112,7 +114,7 @@ public class MemeTestHandler implements Handler {
                 .setText(String.format(message)));
     }
 
-    private List<PartialBotApiMethod<? extends Serializable>> competeMemTest(User user, String message) {
+    private List<PartialBotApiMethod<? extends Serializable>> completeMemTest(User user, String message) {
         int testId = Integer.valueOf(message.substring(message.indexOf("/start ") + 6).trim());
 
         MemeTest memtest = memTestRepository.findById(testId).get();
@@ -250,7 +252,7 @@ public class MemeTestHandler implements Handler {
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> startNewMemeTest(User user) {
-        log.info("start new test");
+        log.info("Sstart new test");
 
         // Create new test
         MemeTest memeTest = new MemeTest();
@@ -287,7 +289,7 @@ public class MemeTestHandler implements Handler {
         // Load meme image
         MemeReaction memeReaction = memeReactionRepository.findById(memeReactionId).get();
         MemeImage memeImage = memImageRepository.findById(memeReaction.getMemeImageId()).get();
-        InputStream memImageIS = getMemImage(memeImage.getUrl());
+        InputStream memImageIS = getMemeImage(memeImage.getUrl());
 
         return List.of(createPhotoTemplate(user)
                 .setPhoto("mem", memImageIS)
@@ -311,15 +313,100 @@ public class MemeTestHandler implements Handler {
         return memeReactionId;
     }
 
-    private InputStream getMemImage(@NotNull String url) {
+    private InputStream getMemeImage(@NotNull String url) {
         InputStream image = null;
+
+//        String realCurrentDirectory = System.getProperty("user.dir");
+//
+//        log.info("Working Directory = " + realCurrentDirectory);
+//
+//
+//        File curDir = new File(".");
+//
+//        log.info("\n PRINT All ALL files in current directory");
+//        List<File> allFiles = new ArrayList<>();
+//        getAllNestedFiles(".", allFiles);
+//
+//        allFiles.stream()
+//                .map(File::getAbsolutePath)
+//                .forEach(absPath -> log.info("path: " + absPath));
+
+//        log.info("=============");
+//        log.info("=============");
+//        log.info("PRINT All files in current directory");
+//        getAllFiles(curDir);
+//
+//        curDir = new File("/resources");
+//        log.info("\n \n PRINT All files in /resources folder");
+//        getAllFiles(curDir);
+//
+//        curDir = new File("/resources/memes");
+//        log.info("\n \n PRINT All files in /resources/memes folder");
+//        getAllFiles(curDir);
+
+//        log.info("=========");
+//        log.info("\n \nPRINT ALL NESTED FILES IN .");
+//        Path start = Paths.get(".");
+//        try (Stream<Path> stream = Files.walk(start, Integer.MAX_VALUE)) {
+//            List<String> collect = stream
+//                    .map(String::valueOf)
+//                    .sorted()
+//                    .collect(Collectors.toList());
+//
+//            collect.forEach(System.out::println);
+//        } catch (IOException ioException) {
+//            ioException.printStackTrace();
+//        }
+//
+//        log.info("=============");
+//        log.info("=============");
+//        log.info("\n \nPRINT ALL NESTED FILES IN realCurrentDirectory" + realCurrentDirectory);
+//        start = Paths.get(realCurrentDirectory);
+//        try (Stream<Path> stream = Files.walk(start, Integer.MAX_VALUE)) {
+//            List<String> collect = stream
+//                    .map(String::valueOf)
+//                    .sorted()
+//                    .collect(Collectors.toList());
+//
+//            collect.forEach(System.out::println);
+//        } catch (IOException ioException) {
+//            ioException.printStackTrace();
+//        }
 
         try {
             image = new URL(urlPrefix + url).openStream();
-        } catch (IOException ioException) {
+       } catch (IOException ioException) {
             ioException.printStackTrace();
         }
         return image;
+    }
+
+    private static void getAllFiles(File curDir) {
+
+        File[] filesList = curDir.listFiles();
+        for(File f : filesList){
+            log.info(f.getAbsolutePath());
+            if(f.isDirectory())
+                log.info("IS DIRECTORY");
+            if(f.isFile()){
+                log.info("IS FILE");
+            }
+        }
+    }
+
+    public void getAllNestedFiles(String directoryName, List<File> files) {
+        File directory = new File(directoryName);
+
+        // Get all files from a directory.
+        File[] fList = directory.listFiles();
+        if(fList != null)
+            for (File file : fList) {
+                if (file.isFile()) {
+                    files.add(file);
+                } else if (file.isDirectory()) {
+                    getAllNestedFiles(file.getAbsolutePath(), files);
+                }
+            }
     }
 
     private InlineKeyboardMarkup createLikeDislikeMarkup(int memeTestId, int memeReactionId) {

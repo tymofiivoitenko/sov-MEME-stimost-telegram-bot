@@ -4,7 +4,8 @@ bot:
 meme-test:
   number-of-memes: 13
 meme-image:
-  meme-folder: file:///Users/tymofiivoitenko/SovmemstimostBot/src/main/resources/memes/
+#  meme-folder: file:src/main/resources/memes/
+  meme-folder: file:/resources/memes/
 spring:
   datasource:
     url: jdbc:postgresql://ec2-54-73-58-75.eu-west-1.compute.amazonaws.com:5432/d1ictmqto6kuds?user=mhtifpwabomgud&password=d95a2365ad375020020cb35543d3da151fd27f97fd990816014f29d2ac8876ed
@@ -17,6 +18,8 @@ spring:
       ddl-auto: update
 jwt:
   secret_key: d$jhfaxskfcDl3#1k
+server:
+  port : 8085
 #  security:
 #    user:
 #      name: tyvoitenko@gmail.com
