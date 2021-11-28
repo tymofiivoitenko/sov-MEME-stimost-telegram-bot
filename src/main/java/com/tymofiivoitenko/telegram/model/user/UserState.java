@@ -6,4 +6,5 @@ public enum UserState {
     ENTER_NAME,
     MEME_TEST,
     MEME_TEST_COMPETITION,
+    GET_STATISTICS
 }

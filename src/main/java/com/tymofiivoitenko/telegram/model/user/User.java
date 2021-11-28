@@ -29,10 +29,10 @@ public class User extends AbstractBaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "user_name")
+    @Column(name = "username")
     private String userName;
 
-    @Column(name = "user_state", nullable = false)
+    @Column(name = "state", nullable = false)
     @NotNull
     private UserState state;
 
@@ -59,5 +59,15 @@ public class User extends AbstractBaseEntity {
         this.chatId = chatId;
         this.firstName = String.valueOf(chatId);
         this.state = UserState.START;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

@@ -105,7 +105,7 @@ public class MemeTestHandler implements Handler {
             return startNewMemeTest(user);
         }
 
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Unexpected call back message:" + message);
     }
 
     private List<PartialBotApiMethod<? extends Serializable>> memeWasAlreadyReacted(User user) {
@@ -117,8 +117,8 @@ public class MemeTestHandler implements Handler {
     private List<PartialBotApiMethod<? extends Serializable>> completeMemTest(User user, String message) {
         int testId = Integer.valueOf(message.substring(message.indexOf("/start ") + 6).trim());
 
-        MemeTest memtest = memTestRepository.findById(testId).get();
-        int createdByUserId = memtest.getCreateByUser();
+        MemeTest memeTest = memTestRepository.findById(testId).get();
+        int createdByUserId = memeTest.getCreateByUser();
 
         log.info("User " + user.getId() + " Compete on test createdByUser id: " + createdByUserId);
 
@@ -284,7 +284,7 @@ public class MemeTestHandler implements Handler {
         log.info("Start next reaction. Data in tg button: memeTestId=" + memeTestId + " memeReactionId = " + memeReactionId);
 
         // Create Markup of Like and Dislike buttons
-        InlineKeyboardMarkup inlineKeyboardMarkup = createLikeDislikeMarkup(memeTestId, memeReactionId);
+        InlineKeyboardMarkup inlineKeyboardMarkup = createMemeEvaluationMarkup(memeTestId, memeReactionId);
 
         // Load meme image
         MemeReaction memeReaction = memeReactionRepository.findById(memeReactionId).get();
@@ -315,63 +315,6 @@ public class MemeTestHandler implements Handler {
 
     private InputStream getMemeImage(@NotNull String url) {
         InputStream image = null;
-
-//        String realCurrentDirectory = System.getProperty("user.dir");
-//
-//        log.info("Working Directory = " + realCurrentDirectory);
-//
-//
-//        File curDir = new File(".");
-//
-//        log.info("\n PRINT All ALL files in current directory");
-//        List<File> allFiles = new ArrayList<>();
-//        getAllNestedFiles(".", allFiles);
-//
-//        allFiles.stream()
-//                .map(File::getAbsolutePath)
-//                .forEach(absPath -> log.info("path: " + absPath));
-
-//        log.info("=============");
-//        log.info("=============");
-//        log.info("PRINT All files in current directory");
-//        getAllFiles(curDir);
-//
-//        curDir = new File("/resources");
-//        log.info("\n \n PRINT All files in /resources folder");
-//        getAllFiles(curDir);
-//
-//        curDir = new File("/resources/memes");
-//        log.info("\n \n PRINT All files in /resources/memes folder");
-//        getAllFiles(curDir);
-
-//        log.info("=========");
-//        log.info("\n \nPRINT ALL NESTED FILES IN .");
-//        Path start = Paths.get(".");
-//        try (Stream<Path> stream = Files.walk(start, Integer.MAX_VALUE)) {
-//            List<String> collect = stream
-//                    .map(String::valueOf)
-//                    .sorted()
-//                    .collect(Collectors.toList());
-//
-//            collect.forEach(System.out::println);
-//        } catch (IOException ioException) {
-//            ioException.printStackTrace();
-//        }
-//
-//        log.info("=============");
-//        log.info("=============");
-//        log.info("\n \nPRINT ALL NESTED FILES IN realCurrentDirectory" + realCurrentDirectory);
-//        start = Paths.get(realCurrentDirectory);
-//        try (Stream<Path> stream = Files.walk(start, Integer.MAX_VALUE)) {
-//            List<String> collect = stream
-//                    .map(String::valueOf)
-//                    .sorted()
-//                    .collect(Collectors.toList());
-//
-//            collect.forEach(System.out::println);
-//        } catch (IOException ioException) {
-//            ioException.printStackTrace();
-//        }
 
         try {
             image = new URL(urlPrefix + url).openStream();
@@ -409,7 +352,7 @@ public class MemeTestHandler implements Handler {
             }
     }
 
-    private InlineKeyboardMarkup createLikeDislikeMarkup(int memeTestId, int memeReactionId) {
+    private InlineKeyboardMarkup createMemeEvaluationMarkup(int memeTestId, int memeReactionId) {
         List<InlineKeyboardButton> inlineKeyboardButtonsRow = new ArrayList<>();
         String likeCallbackData = MEME_IS_LIKED;
         String dislikeCallbackData = MEME_IS_DISLIKED;

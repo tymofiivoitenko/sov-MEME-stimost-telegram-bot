@@ -19,6 +19,7 @@ import java.util.List;
 @Component
 public class UpdateReceiver {
     public static final String MEME_FORCE_START_OVER = "/start";
+    public static final String STATISTICS = "/statistics";
 
     private final List<Handler> handlers;
 
@@ -38,7 +39,7 @@ public class UpdateReceiver {
                 final Message message = update.getMessage();
                 log.info("New update message: <" + message + ">");
 
-                final int chatId = message.getFrom().getId();
+                final Integer chatId = message.getFrom().getId();
                 final String firstName = message.getFrom().getFirstName();
                 final String lastName = message.getFrom().getLastName();
                 final String userName= message.getFrom().getUserName();
@@ -49,6 +50,12 @@ public class UpdateReceiver {
                 // Check if user wants bot to start from scratch by typing "/start"
                 if (message.getText().equals(MEME_FORCE_START_OVER)) {
                     user.setState(UserState.START);
+                    userRepository.save(user);
+                }
+
+                // Check if user wants bot to provide the statistics
+                if (message.getText().equals(STATISTICS)) {
+                    user.setState(UserState.GET_STATISTICS);
                     userRepository.save(user);
                 }
 
