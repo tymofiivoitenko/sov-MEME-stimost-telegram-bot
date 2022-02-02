@@ -17,6 +17,18 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.tymofiivoitenko.telegram.App</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
         <finalName>sovmemstimost-bot</finalName>
     </build>
@@ -31,7 +43,7 @@
 
         <telegrambots-spring.version>0.22</telegrambots-spring.version>
 
-        <hibernate.version>5.4.18.Final</hibernate.version>
+<!--        <hibernate.version>5.4.18.Final</hibernate.version>-->
         <postresql.version>42.2.14</postresql.version>
     </properties>
 
